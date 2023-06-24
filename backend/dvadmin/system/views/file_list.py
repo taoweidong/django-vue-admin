@@ -1,5 +1,4 @@
 import hashlib
-import mimetypes
 
 from rest_framework import serializers
 

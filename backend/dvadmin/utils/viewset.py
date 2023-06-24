@@ -6,9 +6,9 @@
 @Created on: 2021/6/1 001 22:57
 @Remark: 自定义视图集
 """
-import uuid
 
 from django.db import transaction
+from django_restql.mixins import QueryArgumentsMixin
 from drf_yasg import openapi
 from drf_yasg.utils import swagger_auto_schema
 from rest_framework.decorators import action
@@ -18,7 +18,7 @@ from dvadmin.utils.filters import DataLevelPermissionsFilter
 from dvadmin.utils.import_export_mixin import ExportSerializerMixin, ImportSerializerMixin
 from dvadmin.utils.json_response import SuccessResponse, ErrorResponse, DetailResponse
 from dvadmin.utils.permission import CustomPermission
-from django_restql.mixins import QueryArgumentsMixin
+
 
 class CustomModelViewSet(ModelViewSet,ImportSerializerMixin,ExportSerializerMixin,QueryArgumentsMixin):
     """

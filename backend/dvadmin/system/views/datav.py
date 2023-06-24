@@ -3,26 +3,19 @@
 # @Time    : 2023/4/14 15:49
 # @Author  : harry
 import datetime
-import json
-import re
 import time
 
-from django.db.models import Count, Sum, Q
-from django.db.models.functions import TruncMonth, TruncDay
-from django.utils import timezone
+from django.db import connection
+from django.db.models import Count
+from django.db.models import Sum
+from django.db.models.functions import TruncDay
 from rest_framework.decorators import action
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.viewsets import GenericViewSet
 
-from conf.env import DATABASE_USER, DATABASE_NAME
 from dvadmin.system.models import Users, LoginLog, FileList
 from dvadmin.system.views.login_log import LoginLogSerializer
 from dvadmin.utils.json_response import DetailResponse
-from django.db import connection
-from django.utils.timezone import now
-from django.db.models import Count
-from django.db.models.functions import TruncDate
-
 from dvadmin.utils.string_util import format_bytes
 
 

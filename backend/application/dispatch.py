@@ -1,8 +1,9 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 from django.conf import settings
-from django.db import connection
 from django.core.cache import cache
+from django.db import connection
+
 from dvadmin.utils.validator import CustomValidationError
 
 dispatch_db_type = getattr(settings, 'DISPATCH_DB_TYPE', 'memory')  # redis

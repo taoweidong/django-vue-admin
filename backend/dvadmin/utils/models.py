@@ -6,7 +6,6 @@
 @Created on: 2021/5/31 031 22:08
 @Remark: 公共基础model类
 """
-import uuid
 from datetime import date, timedelta
 
 from django.apps import apps

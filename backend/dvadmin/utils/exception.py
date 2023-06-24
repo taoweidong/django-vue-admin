@@ -12,7 +12,7 @@ import traceback
 from django.db.models import ProtectedError
 from django.http import Http404
 from rest_framework.exceptions import APIException as DRFAPIException, AuthenticationFailed
-from rest_framework.status import HTTP_407_PROXY_AUTHENTICATION_REQUIRED, HTTP_401_UNAUTHORIZED
+from rest_framework.status import HTTP_401_UNAUTHORIZED
 from rest_framework.views import set_rollback, exception_handler
 
 from dvadmin.utils.json_response import ErrorResponse

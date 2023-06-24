@@ -1,8 +1,8 @@
 import base64
 import hashlib
-from datetime import datetime, timedelta
 
 from captcha.views import CaptchaStore, captcha_image
+from django.conf import settings
 from django.contrib import auth
 from django.contrib.auth import login
 from django.shortcuts import redirect
@@ -12,20 +12,15 @@ from drf_yasg.utils import swagger_auto_schema
 from rest_framework import serializers
 from rest_framework.status import HTTP_401_UNAUTHORIZED
 from rest_framework.views import APIView
-from rest_framework_simplejwt.authentication import JWTAuthentication
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
-from rest_framework_simplejwt.token_blacklist.models import OutstandingToken
-from rest_framework_simplejwt.tokens import RefreshToken, AccessToken
+from rest_framework_simplejwt.tokens import RefreshToken
 from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
-
-from django.conf import settings
 
 from application import dispatch
 from dvadmin.system.models import Users
 from dvadmin.utils.json_response import ErrorResponse, DetailResponse
 from dvadmin.utils.request_util import save_login_log
 from dvadmin.utils.serializers import CustomModelSerializer
-from dvadmin.utils.validator import CustomValidationError
 
 
 class CaptchaView(APIView):
@@ -58,9 +53,10 @@ class LoginSerializer(TokenObtainPairSerializer):
     登录的序列化器:
     重写djangorestframework-simplejwt的序列化器
     """
-    captcha = serializers.CharField(
-        max_length=6, required=False, allow_null=True, allow_blank=True
-    )
+
+    # captcha = serializers.CharField(
+    #     max_length=6, required=False, allow_null=True, allow_blank=True
+    # )
 
     class Meta:
         model = Users
@@ -71,26 +67,26 @@ class LoginSerializer(TokenObtainPairSerializer):
 
     def validate(self, attrs):
 
-        captcha = self.initial_data.get("captcha", None)
-        if dispatch.get_system_config_values("base.captcha_state"):
-            if captcha is None:
-                raise CustomValidationError("验证码不能为空")
-            self.image_code = CaptchaStore.objects.filter(
-                id=self.initial_data["captchaKey"]
-            ).first()
-            five_minute_ago = datetime.now() - timedelta(hours=0, minutes=5, seconds=0)
-            if self.image_code and five_minute_ago > self.image_code.expiration:
-                self.image_code and self.image_code.delete()
-                raise CustomValidationError("验证码过期")
-            else:
-                if self.image_code and (
-                        self.image_code.response == captcha
-                        or self.image_code.challenge == captcha
-                ):
-                    self.image_code and self.image_code.delete()
-                else:
-                    self.image_code and self.image_code.delete()
-                    raise CustomValidationError("图片验证码错误")
+        # captcha = self.initial_data.get("captcha", None)
+        # if dispatch.get_system_config_values("base.captcha_state"):
+        #     if captcha is None:
+        #         raise CustomValidationError("验证码不能为空")
+        #     self.image_code = CaptchaStore.objects.filter(
+        #         id=self.initial_data["captchaKey"]
+        #     ).first()
+        #     five_minute_ago = datetime.now() - timedelta(hours=0, minutes=5, seconds=0)
+        #     if self.image_code and five_minute_ago > self.image_code.expiration:
+        #         self.image_code and self.image_code.delete()
+        #         raise CustomValidationError("验证码过期")
+        #     else:
+        #         if self.image_code and (
+        #                 self.image_code.response == captcha
+        #                 or self.image_code.challenge == captcha
+        #         ):
+        #             self.image_code and self.image_code.delete()
+        #         else:
+        #             self.image_code and self.image_code.delete()
+        #             raise CustomValidationError("图片验证码错误")
         data = super().validate(attrs)
         data["name"] = self.user.name
         data["userId"] = self.user.id
@@ -125,21 +121,24 @@ class LoginSerializer(TokenObtainPairSerializer):
             Users.objects.filter(id=self.user.id).update(last_token=data.get('refresh'))
         return {"code": 2000, "msg": "请求成功", "data": data}
 
+
 class CustomTokenRefreshView(TokenRefreshView):
     """
     自定义token刷新
     """
+
     def post(self, request, *args, **kwargs):
         refresh_token = request.data.get("refresh")
         try:
             token = RefreshToken(refresh_token)
             data = {
-                "access":str(token.access_token),
-                "refresh":str(token)
+                "access": str(token.access_token),
+                "refresh": str(token)
             }
         except:
             return ErrorResponse(status=HTTP_401_UNAUTHORIZED)
         return DetailResponse(data=data)
+
 
 class LoginView(TokenObtainPairView):
     """

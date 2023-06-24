@@ -6,15 +6,13 @@
 @Created on: 2021/6/1 001 22:47
 @Remark: 自定义序列化器
 """
+from django_restql.mixins import DynamicFieldsMixin
 from rest_framework import serializers
 from rest_framework.fields import empty
 from rest_framework.request import Request
 from rest_framework.serializers import ModelSerializer
-from django.utils.functional import cached_property
-from rest_framework.utils.serializer_helpers import BindingDict
 
 from dvadmin.system.models import Users
-from django_restql.mixins import DynamicFieldsMixin
 
 
 class CustomModelSerializer(DynamicFieldsMixin, ModelSerializer):

@@ -1,14 +1,12 @@
 # -*- coding: utf-8 -*-
+import json
 import urllib
 
-from asgiref.sync import sync_to_async, async_to_sync
+from asgiref.sync import async_to_sync
 from channels.db import database_sync_to_async
-from channels.generic.websocket import AsyncJsonWebsocketConsumer, AsyncWebsocketConsumer
-import json
-
+from channels.generic.websocket import AsyncJsonWebsocketConsumer
 from channels.layers import get_channel_layer
 from jwt import InvalidSignatureError
-from rest_framework.request import Request
 
 from application import settings
 
